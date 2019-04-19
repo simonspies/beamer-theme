@@ -1,0 +1,212 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Variables %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\primarycolor}[1]{\def\theprimarycolor{#1}}
+\newcommand{\secondarycolor}[1]{\def\thesecondarycolor{#1}}
+\newcommand{\counterbackground}[1]{\def\thecounterbackground{#1}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Colors %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\definecolor{darkcerulean}{rgb}{0.063661, 0.257392, 0.477463}
+\definecolor{scooter}{rgb}{0.161162, 0.775760, 0.885416}
+\definecolor{fireenginered}{rgb}{0.757398, 0.151664, 0.177088}
+\definecolor{pomegranate}{rgb}{0.927557, 0.260794, 0.138377}
+\definecolor{mineshaft}{rgb}{0.199974, 0.200015, 0.199971}
+\definecolor{tingray}{rgb}{0.501904, 0.501994, 0.501898}
+
+
+\primarycolor{darkcerulean}
+\secondarycolor{scooter}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Beamer Layout %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\useoutertheme[subsection=false]{miniframes}
+\useinnertheme{default}
+\usefonttheme[onlymath]{serif}
+\setbeamercolor*{normal text}{fg=black,bg=white}
+\setbeamercolor*{section in head/foot}{fg=white, bg=\theprimarycolor}
+\setbeamercolor*{frametitle}{fg=\theprimarycolor, bg=white}
+\setbeamercolor*{titlelike}{fg=\theprimarycolor,bg=white}
+\setbeamercolor*{structure}{fg=\theprimarycolor}
+ 
+\setbeamertemplate{logo}{
+    \vspace{-1em}
+    \begin{tikzpicture}
+        \node {\thecounterbackground};
+        \node {{\tiny\color{white}\insertframenumber}};
+    \end{tikzpicture}
+}
+\setbeamertemplate{footline}{}
+\beamertemplatenavigationsymbolsempty
+
+\setbeamertemplate{itemize items}{
+    \begin{tikzpicture}
+        \fill (0,0) circle (2pt);
+        \draw (0,0) circle (3pt);
+    \end{tikzpicture}
+}
+
+\setbeamertemplate{enumerate items}[default]
+
+
+%****************************************************************************
+% The following is a hack to allow the transparent package to be loaded at the
+% same time as the tikz package: 
+% https://tex.stackexchange.com/questions/253401/tikz-and-ctable-incompatibility-gives-error-when-printing/253417#253417
+
+
+\makeatletter
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname pgfutil@addpdfresource@extgs\endcsname\relax
+\else
+  \AtBeginDocument{%
+    % \pgf@sys@addpdfresource@extgs@plain{%
+    \pgfutil@addpdfresource@extgs{%
+      \TRP@list
+    }%
+  }%  
+  \let\TRP@addresource\relax
+\fi
+\makeatother
+%****************************************************************************
+
+
+
+
+%***************************************************************************************************
+% The following magic makes sure that the pnote command produces notes that are displayed in pdfpc:
+
+% create a new file handle
+\newwrite\pdfpcnotesfile
+
+% open file on \begin{document}
+\AtBeginDocument{%
+	\immediate\openout\pdfpcnotesfile\jobname.pdfpc\relax
+	\immediate\write\pdfpcnotesfile{[notes]}
+}
+% define a # http://tex.stackexchange.com/a/37757/10327
+\begingroup
+	\catcode`\#=12
+	\gdef\hashchar{#}%
+\endgroup
+
+
+\def\lastframenumber{0}
+
+% define command \pnote{} that works like note but
+% additionally writes notes to file in pdfpc readable format
+\newcommand{\pnote}[1]{%
+	% keep normal notes working
+	\note{#1}%
+
+	% if frame changed - write a new header
+	\ifdim\theframenumber pt>\lastframenumber pt
+		\let\lastframenumber\theframenumber
+		\begingroup
+			\let\#\hashchar
+			\immediate\write\pdfpcnotesfile{\#\#\# \theframenumber}%
+		\endgroup
+	\fi
+
+	% write note to file
+	\immediate\write\pdfpcnotesfile{\unexpanded{#1}}%
+}
+% close file on \begin{document}
+\AtEndDocument{%
+	\immediate\closeout\pdfpcnotesfile
+}
+
+%            END OF pdfpc MAGIC
+%***************************************************************************************************
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Boxes
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% #1 – box name
+% #2 – left color
+% #3 – right color
+% #4 – Title (may contain #1)
+\newcommand{\newlargebox}[4]{
+    \newtcolorbox{#1}[1][]{
+        beamer,
+        width=\textwidth,
+        titlerule=3mm,
+        colframe=white,
+        coltitle={#2},
+        bottom=4pt, 
+        top=-4pt,
+        left=6pt,   
+        right=6pt,   
+        toptitle=4pt,
+        bottomtitle=-2pt,
+        fonttitle=\bfseries\large,
+        adjusted title={#4},
+        outer arc=.5mm,
+        arc=.5mm,
+        no shadow,
+        fuzzy shadow={1mm}{-1mm}{-1.2mm}{.7mm}{black!20},
+        interior titled code={
+          \path [left color = {#2}, right color = {#3}]
+          (title.south west) + (8pt, 0) rectangle ++(\textwidth-8pt, 0.02);
+        }
+      }
+}
+
+
+\newtcolorbox{emptybox}[1][]{
+    beamer,
+    width=\textwidth,
+    % enlarge left by=-3pt,
+    titlerule=0mm,
+    colframe=white,
+    coltitle=black,
+    bottom=8pt, 
+    top=-10pt,
+    left=6pt,  
+    notitle, 
+    adjusted title={},
+    outer arc=.5mm,
+    arc=.5mm,
+    no shadow,
+    fuzzy shadow={1mm}{-1mm}{-1.2mm}{.7mm}{black!20},
+    interior titled code={}
+}
+
+\newtcolorbox{plainbox}[1][]{
+    beamer,
+    width=\textwidth,
+    % enlarge left by=-3pt,
+    titlerule=0mm,
+    colframe=white,
+    coltitle=black,
+    bottom=8pt,
+    toptitle=4pt, 
+    top=2pt,
+    left=6pt,  
+    notitle, 
+    adjusted title={#1},
+    outer arc=.5mm,
+    arc=.5mm,
+    no shadow,
+    fuzzy shadow={1mm}{-1mm}{-1.2mm}{.7mm}{black!20},
+    interior titled code={}
+}
+
+\newlargebox{defaultbox}{\theprimarycolor}{\thesecondarycolor}{#1} 
+\newlargebox{darkbox}{mineshaft}{tingray}{#1} 
+\newlargebox{graybox}{tingray}{white}{#1} 
+
+\newlargebox{theorembox}{\theprimarycolor}{\thesecondarycolor}{Theorem {\ifthenelse{\equal{#1}{}}{}{(#1)}}} 
+\newlargebox{definitionbox}{\theprimarycolor}{\thesecondarycolor}{Definition {\ifthenelse{\equal{#1}{}}{}{(#1)}}} 
+\newlargebox{proofbox}{mineshaft}{tingray}{Proof{\ifthenelse{\equal{#1}{}}{}{ #1}}.} 
+
+\newcommand{\smallbox}[1]{\begin{emptybox}\textbf{#1}\end{emptybox}}
+\newcommand{\defaultsmallbox}[1]{\smallbox{\color{\theprimarycolor}#1}}
+\newcommand{\graysmallbox}[1]{\smallbox{\color{tingray}#1}}
+
