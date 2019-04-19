@@ -1,0 +1,206 @@
+\documentclass{beamer}
+
+
+\input{headers/packages}
+\input{headers/theme}
+\input{headers/definitions}
+
+\title{Beamer Theme Example}
+\author{Simon Spies}
+
+\begin{document}
+
+\begin{frame}[plain]
+    \maketitle
+\end{frame} 
+
+\section{Basics}
+\subsection{}
+
+\begin{frame}{Colors}
+    The theme mainly relies on two colors, the primary color \tikz{\fill[fill=\theprimarycolor] (0,0) rectangle ++(10pt,10pt)}
+    and the secondary color \tikz{\fill[fill=\thesecondarycolor] (0,0) rectangle ++(10pt,10pt)}. For example, the secondary color 
+    is used to \highlight{highlight text}.\\[2em]
+
+\end{frame}
+
+
+{
+    \primarycolor{red}
+    \secondarycolor{green}
+    \begin{frame}[fragile]{Colors}
+        The theme mainly relies on two colors, the primary color \tikz{\fill[fill=\theprimarycolor] (0,0) rectangle ++(10pt,10pt)}
+        and the secondary color \tikz{\fill[fill=\thesecondarycolor] (0,0) rectangle ++(10pt,10pt)}. For example, the secondary color 
+        is used to \highlight{highlight text}.\\[2em]
+
+        To change the primary color to \texttt{red} and the secondary color to \verb|green|,
+        use \verb|\primarycolor{red}| and \verb|\secondarycolor{green}|. 
+    \end{frame}
+}
+
+\begin{frame}{Lists}
+    \textbf{Itemize}
+    \begin{itemize}
+        \item First Item
+        \item Second Item
+    \end{itemize}
+    
+    \vspace{2em}
+    \textbf{Enumerate}
+    \begin{enumerate}
+        \item First Item
+        \item Second Item
+    \end{enumerate}
+\end{frame}
+    
+\begin{frame}[fragile]{Highlighting}
+    You can highlight \highlight{text} with \verb|\highlight{text}|. \verb|\highlight| is compatible 
+    with beamer overlays. Thus, to only highlight \highlight<2>{text} on the second slide you can 
+    simply write \verb|\highlight<2>{text}|.\\[2em]
+
+
+    To change the highlighting color of the \highlight[red]{text}, pass the color 
+    as an optional argument \verb|\highlight[red]{text}|.
+\end{frame}
+
+\begin{frame}[fragile]{Frame Numbers}
+    The color of the frame numbers can be controlled with 
+    \verb|\framenumbercolor{red}|. The background with
+    \verb|\framenumberbackground{...}|.
+\end{frame}
+
+{
+    \framenumbercolor{white}
+    \framenumberbackground
+    {{\color{\theprimarycolor}\huge\faHeart}}
+\begin{frame}[fragile]{Frame Numbers}
+    The color of the frame numbers can be controlled with 
+    \verb|\framenumbercolor{red}|. The background with
+    \verb|\framenumberbackground{...}|.\vspace{2em}
+
+    For example, we can replace the background with a heart and 
+    make the counter white:
+    \begin{verbatim}
+\framenumbercolor{white}
+\framenumberbackground
+    {{\color{\theprimarycolor}\huge\faHeart}}
+    \end{verbatim}
+\end{frame}
+}
+
+\section{Boxes}
+\subsection{}
+
+\begin{frame}{Color Boxes}
+    \begin{defaultbox}[Default Box]
+        This is a simple box.
+    \end{defaultbox}
+
+    \begin{darkbox}[Dark Box]
+        This is a dark box.
+    \end{darkbox}
+
+    \begin{graybox}[Gray Box]
+        This is a gray box.
+    \end{graybox}
+\end{frame}
+
+\begin{frame}{Other Boxes}
+    \begin{theorembox}[Really True]
+        \[\mathsf{true} = \mathsf{false}\]
+    \end{theorembox}
+
+    \begin{definitionbox}[Something Cool]
+        This is a great definition.
+    \end{definitionbox}
+
+    \begin{proofbox}
+        This is really a proof.
+    \end{proofbox}
+\end{frame}
+
+\begin{frame}{Small Boxes}
+    \defaultsmallbox{Default}
+    \smallbox{Small}
+    \graysmallbox{Gray}
+\end{frame}
+
+\begin{frame}{Simple Boxes}
+    \begin{plainbox}[Plain Box]
+        This is a plain box.
+    \end{plainbox}
+
+    \begin{emptybox}
+        This is an empty box.
+    \end{emptybox}
+\end{frame}
+
+\section{Timeline}
+\subsection{} 
+
+
+
+
+\begin{frame}{Timeline}
+    
+    \begin{textblock*}{\paperwidth} (0cm,5pt)
+        \begin{center}
+            \begin{tikzpicture}
+                \coordinate (top) at (0,0);
+                \coordinate[below=8 of top] (bottom);
+                \coordinate[below=2 of top] (one);
+                \coordinate[below=3.5 of top] (two);
+                \coordinate[below=5 of top] (three);
+                \coordinate[below=6.5 of top] (four);
+    
+                \draw[->, \theprimarycolor] (top) -- (bottom);
+    
+                \visible<2->{
+                    \begin{timelinenode}[right]{one}{.4\linewidth}{First Item}
+                        Text here.
+                    \end{timelinenode}
+                }
+                \visible<3->{
+                    \begin{timelinenode}[left]{two}{.4\linewidth}{Second Item}
+                        Text here.
+                    \end{timelinenode}
+                }
+                \visible<4->{
+                    \begin{timelinenode}[right]{three}{.4\linewidth}{Third Item}
+                        Text here.
+                    \end{timelinenode}
+                }
+                \visible<5->{
+                    \begin{graytimelinenode}[left]{four}{.4\linewidth}{Fourth Item}
+                        Text here.
+                    \end{graytimelinenode}
+                }
+            \end{tikzpicture}        
+        \end{center}
+    \end{textblock*}
+\end{frame}
+
+
+\begin{frame}{Simple Timeline}
+    \begin{textblock*}{\paperwidth} (0cm,5pt)
+        \begin{center}
+            \begin{tikzpicture}
+                \coordinate (top) at (0,0);
+                \coordinate[below=8 of top] (bottom);
+                \coordinate[below=2 of top] (one);
+                \coordinate[below=3.5 of top] (two);
+                \coordinate[below=5 of top] (three);
+                \coordinate[below=6.5 of top] (four);
+    
+                \draw[->, \theprimarycolor] (top) -- (bottom);
+    
+                \smalltimelinenode[right]{one}{.2\textwidth}{First Item};
+                \smalltimelinenode[left]{two}{.3\textwidth}{Second Item};
+                \smalltimelinenode[right]{three}{.2\textwidth}{Third Item};
+                \graysmalltimelinenode[left]{four}{.3\textwidth}{Fourth Item};
+            \end{tikzpicture}        
+        \end{center}
+    \end{textblock*}
+\end{frame}
+
+\end{document}
